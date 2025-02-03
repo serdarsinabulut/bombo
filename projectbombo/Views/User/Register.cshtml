@@ -1,0 +1,39 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h2 class="text-center">Kayıt Ol</h2>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" name="username" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" class="form-control" name="password" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre Tekrarı</label>
+                        <input type="password" class="form-control" name="confirmPassword" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Kayıt Ol</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a href="/User/Login">Zaten bir hesabınız var mı? Giriş yapın.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

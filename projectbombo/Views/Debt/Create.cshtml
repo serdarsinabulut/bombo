@@ -1,0 +1,27 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Borç Ekle";
+}
+
+<h2 class="text-center mb-4">Borç Ekle</h2>
+
+<div class="card p-4">
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Borç Verilecek Kişi:</label>
+            <select class="form-select" name="borrowerId">
+                @foreach (var user in ViewBag.Users)
+                {
+                    <option value="@user.Id">@user.Username</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Borç Miktarı:</label>
+            <input type="number" step="0.01" class="form-control" name="amount" required />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Borç Ekle</button>
+    </form>
+</div>

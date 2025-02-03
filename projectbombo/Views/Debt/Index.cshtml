@@ -1,0 +1,51 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Borç Listesi";
+}
+
+<h2 class="text-center mb-4">Borç Listesi</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Kimden</th>
+            <th>Kime</th>
+            <th>Miktar</th>
+            <th>Tarih</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var debt in Model)
+        {
+            <tr>
+                <td>@debt.Lender.Username</td>
+                <td>@debt.Borrower.Username</td>
+                <td>@debt.Amount</td>
+                <td>@debt.Date.ToShortDateString()</td>
+                <td>
+                    <span class="badge @(debt.IsPaid ? "bg-success" : "bg-danger")">
+                        @(debt.IsPaid ? "Ödendi" : "Ödenmedi")
+                    </span>
+                </td>
+                <td>
+                    @if (!debt.IsPaid)
+                    {
+                        <a href="/Debt/Pay/@debt.Id" class="btn btn-sm btn-warning">Öde</a>
+                    }
+                </td>
+                <td>
+                    <!-- Borç silme butonu -->
+                    <a href="/Debt/Delete/@debt.Id" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Borcu silmek istediğinize emin misiniz?')">Sil</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="text-center">
+    <a href="/Debt/Create" class="btn btn-primary">Yeni Borç Ekle</a>
+</div>
