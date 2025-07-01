@@ -12,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// SQLite bağlantısı
+// MSSQL bağlantısı
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("mssqlconnection"))); // UseSqlite yerine UseSqlServer
 
 // Kimlik doğrulama ekleyelim (çerez bazlı)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -25,6 +25,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        // İsterseniz burada seed data da ekleyebilirsiniz
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Veritabanı migrations sırasında bir hata oluştu.");
+    }
+}
 
 // Kimlik doğrulama ve yetkilendirme middleware'lerini doğru sırayla ekleyin
 app.UseAuthentication(); // Authentication işlemleri

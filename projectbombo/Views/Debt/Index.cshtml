@@ -11,6 +11,7 @@
             <th>Kimden</th>
             <th>Kime</th>
             <th>Miktar</th>
+            <th>Açıklama</th>
             <th>Tarih</th>
             <th>Durum</th>
             <th>İşlem</th>
@@ -23,6 +24,7 @@
                 <td>@debt.Lender.Username</td>
                 <td>@debt.Borrower.Username</td>
                 <td>@debt.Amount</td>
+                <td>@debt.Explanation</td>
                 <td>@debt.Date.ToShortDateString()</td>
                 <td>
                     <span class="badge @(debt.IsPaid ? "bg-success" : "bg-danger")">

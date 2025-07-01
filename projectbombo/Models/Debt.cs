@@ -20,6 +20,9 @@ namespace projectbombo.Models
         public decimal Amount { get; set; } // Borç miktarı
 
         [Required]
+        public string Explanation{get;set;}
+
+        [Required]
         public DateTime Date { get; set; } = DateTime.Now; // Borç tarihi
 
         public bool IsPaid { get; set; } = false; // Ödeme durumu

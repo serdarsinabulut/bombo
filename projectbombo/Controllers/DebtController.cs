@@ -43,7 +43,7 @@ namespace projectbombo.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(int borrowerId, decimal amount)
+        public IActionResult Create(int borrowerId, decimal amount,string explanation)
         {
             int lenderId = int.Parse(User.FindFirst("UserId").Value);
 
@@ -59,6 +59,7 @@ namespace projectbombo.Controllers
                 LenderId = lenderId,
                 BorrowerId = borrowerId,
                 Amount = amount,
+                Explanation = explanation,
                 IsPaid = false,
                 Date = DateTime.Now
             };
