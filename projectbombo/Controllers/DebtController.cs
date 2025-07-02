@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using projectbombo.Data;
 using projectbombo.Models;
 using System.Linq;
@@ -17,7 +18,15 @@ namespace projectbombo.Controllers
 
         public IActionResult Index()
         {
-            int userId = int.Parse(User.FindFirst("UserId").Value);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized();
+            }
 
             // Borçlar, kullanıcının borçlarını ve alacaklarını alacak şekilde listelenecek
             var debts = _context.Debts
@@ -28,7 +37,7 @@ namespace projectbombo.Controllers
                 .ToList();
 
             // Verinin boş olup olmadığını kontrol et
-            if (debts == null || !debts.Any())
+            if (debts.IsNullOrEmpty())
             {
                 ModelState.AddModelError("", "Borçlar bulunamadı.");
             }
@@ -38,14 +47,27 @@ namespace projectbombo.Controllers
 
         public IActionResult Create()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             ViewBag.Users = _context.Users.ToList(); // Kullanıcı listesini çekiyoruz
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(int borrowerId, decimal amount,string explanation)
+        public IActionResult Create(int borrowerId, decimal amount, string explanation)
         {
-            int lenderId = int.Parse(User.FindFirst("UserId").Value);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Users = _context.Users.ToList();
+                return View();
+            }
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int lenderId))
+            {
+                return Unauthorized();
+            }
 
             if (borrowerId == lenderId)
             {
@@ -72,6 +94,10 @@ namespace projectbombo.Controllers
 
         public IActionResult Pay(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var debt = _context.Debts.FirstOrDefault(d => d.Id == id);
             if (debt != null)
             {
@@ -83,6 +109,10 @@ namespace projectbombo.Controllers
 
         public IActionResult Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var debt = _context.Debts.FirstOrDefault(d => d.Id == id);
             if (debt != null)
             {
